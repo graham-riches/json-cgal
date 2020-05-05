@@ -38,12 +38,12 @@ namespace JsonCGAL
 
 	
 	/**
-	 * @brief create a points array based on a pointer to an array of CGAL points
+	 * @brief create a points array based on a pointer to an array of CGAL base type points
 	 * 
 	 * @param points 
 	 * @param size 
 	 */
-	void JsonCGAL::set_points(CGALTypes::Point *points, int size)
+	void JsonCGAL::set_points(CGALBaseTypes::BasePoint *points, int size)
 	{
 		this->_points.clear();
 		this->_points.reserve(size);

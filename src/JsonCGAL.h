@@ -48,7 +48,7 @@ namespace JsonCGAL
 		/* accessors */
 		CGAL_list<Point> get_points() { return this->_points; }
 		void set_points( CGAL_list<Point> points ) { this->_points = points; }
-		void set_points(CGALTypes::Point *points, int size);
+		void set_points(CGALBaseTypes::BasePoint *points, int size);
 		CGAL_list<Line> get_lines() { return this->_lines; }
 		void set_lines(CGAL_list<Line> lines) { this->_lines = lines; }
 		CGAL_list<Segment> get_segments() { return this->_segments; }

@@ -24,7 +24,7 @@ TEST(JsonCGALTests, TestLoadInvalidFileReturnsFalse)
 
 TEST(JsonCGALTests, TestSettingPointsFromList)
 {
-	CGALTypes::Point points[] = { {1, 1}, {2, 2} };
+	CGALBaseTypes::BasePoint points[] = { {1, 1}, {2, 2} };
 	JsonCGAL::JsonCGAL json_data;
 	json_data.set_points(points, sizeof(points));
 	CGAL_list<JsonCGAL::Point> check_points = json_data.get_points();
