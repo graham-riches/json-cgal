@@ -350,4 +350,4 @@ MigrationBackup/
 .ionide/
 
 # build folder
-.build/
+build/
