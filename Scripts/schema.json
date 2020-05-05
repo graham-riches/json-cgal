@@ -1,0 +1,34 @@
+{
+    "anyOf": [
+        {
+            "type": "string",
+            "properties": { 
+                "coordinates": { 
+                    "type": "array", 
+                    "items": { 
+                        "type": "number" 
+                        }
+                }
+            }
+        },
+        {
+            "type": "string",
+            "properties": { 
+                "points": { 
+                    "type": "array", 
+                    "items": { 
+                        "type": "string",
+                        "properties": { 
+                            "coordinates": { 
+                                "type": "array", 
+                                "items": { 
+                                    "type": "number" 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }   
+    ]    
+}
