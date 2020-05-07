@@ -22,25 +22,6 @@
 
 namespace JsonCGAL
 {
-
-	/**
-	 * \brief create a points array based on a pointer to an array of CGAL base type points
-	 * 
-	 * \param points 
-	 * \param size 
-	 */
-	void JsonCGAL::set_points(CGALBaseTypes::BasePoint_2 *points, int size)
-	{
-		this->_points.clear();
-		this->_points.reserve(size);
-		for (int i=0; i<size; i++)
-		{
-			this->_points.push_back(Point_2d(points->x, points->y));
-			points++;
-		}
-	}
-
-
 	/**
 	* \brief parse a json data field into the appropriate class list
 	*

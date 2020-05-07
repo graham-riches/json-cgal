@@ -13,22 +13,12 @@
 #include "JsonCGAL.h"
 #include "json.hpp"
 #include "cgal_kernel_config.h"
-#include "CGAL_Types.h"
 
 
 TEST(JsonCGALTests, TestLoadInvalidFileReturnsFalse)
 {
 	JsonCGAL::JsonCGAL json_data;
 	ASSERT_FALSE(json_data.load("invalid.json"));
-}
-
-TEST(JsonCGALTests, TestSettingPointsFromList)
-{
-	CGALBaseTypes::BasePoint_2 points[] = { {1, 1}, {2, 2} };
-	JsonCGAL::JsonCGAL json_data;
-	json_data.set_points(points, sizeof(points));
-	CGAL_list<JsonCGAL::Point_2d> check_points = json_data.get_points();
-	ASSERT_EQ(points[0].x, check_points[0].x());
 }
 
 TEST(JsonCGALTests, TestGettingPoints)

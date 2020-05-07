@@ -21,7 +21,6 @@
 
 #include "json.hpp"
 #include "cgal_kernel_config.h"
-#include "CGAL_Types.h"
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -107,8 +106,6 @@ namespace JsonCGAL
    };
 
 
-
-
    class JsonCGAL
    {
    private:
@@ -127,7 +124,6 @@ namespace JsonCGAL
 	   /* accessors */
 	   CGAL_list<Point_2d> get_points() { return this->_points; }
 	   void set_points(CGAL_list<Point_2d> points) { this->_points = points; }
-	   void set_points(CGALBaseTypes::BasePoint_2 *points, int size);
 	   CGAL_list<Line_2d> get_lines() { return this->_lines; }
 	   void set_lines(CGAL_list<Line_2d> lines) { this->_lines = lines; }
 	   CGAL_list<Segment_2d> get_segments() { return this->_segments; }
