@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-@brief python side json parser for json CGAL geometry schema
-@author: Graham Riches
-@date: Sat May  2 07:54:07 2020
-@description
+\brief python side json parser for json CGAL geometry schema
+\author: Graham Riches
+\date: Sat May  2 07:54:07 2020
+\description
     parse a CGAL json format into python types.
 """
 
