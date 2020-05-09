@@ -18,117 +18,75 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <boost/variant.hpp>
+#include <boost/foreach.hpp>
 
 #include "json.hpp"
+#include "JsonCGALMap.h"
+#include "JsonCGALTypes.h"
 #include "cgal_kernel_config.h"
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 namespace JsonCGAL
 {	
-   /**
-    * \brief parent class for JSON wrapper for CGAL type classes
-    */
-   class JsonCGALBase
-   {
-      public:
-         virtual nlohmann::json encode() = 0;
-   };
+   /* multi-object boost variant type for holding CGAL objects */
+   typedef boost::variant<Point_2d> CGAL_object;
 
-   class Point_2d : public Kernel::Point_2, public JsonCGALBase
-	{
-		public:
-			using Kernel::Point_2::Point_2;
-			nlohmann::json encode();
-	};
-
-   class Line_2d : public Kernel::Line_2, public JsonCGALBase
-	{
-		public:
-         using Kernel::Line_2::Line_2;
-			nlohmann::json encode();
-	};
-
-   class Segment_2d : public Kernel::Segment_2, public JsonCGALBase
-	{
-		public:
-			using Kernel::Segment_2::Segment_2;
-			nlohmann::json encode();
-	};
-
-   class Weighted_point_2d : public Kernel::Weighted_point_2, public JsonCGALBase
-   {
-	   public:
-		   using Kernel::Weighted_point_2::Weighted_point_2;
-		   nlohmann::json encode();
-   };
-
-   class Vector_2d : public Kernel::Vector_2, public JsonCGALBase
-   {
-	   public:
-		   using Kernel::Vector_2::Vector_2;
-		   nlohmann::json encode();
-   };
-
-   class Direction_2d : public Kernel::Direction_2, public JsonCGALBase
-   {
-	   public:
-		   using Kernel::Direction_2::Direction_2;
-		   nlohmann::json encode();
-   };
-
-   class Ray_2d : public Kernel::Ray_2, public JsonCGALBase
-   {
-	   public:
-		   using Kernel::Ray_2::Ray_2;
-		   nlohmann::json encode();
-   };
-
-   class Triangle_2d : public Kernel::Triangle_2, public JsonCGALBase
+   /* boost visitor class for unpacking objects */
+   class JsonCGALVisitor : public boost::static_visitor<enum SupportedTypes::SupportedTypes>
    {
 		public:
-		   using Kernel::Triangle_2::Triangle_2;
-		   nlohmann::json encode();
+			enum SupportedTypes::SupportedTypes operator() (Point_2d obj) const { return obj.getType(); }
+			//enum SupportedTypes::SupportedTypes operator() (Line_2d    obj) const { return obj.getType(); }
+			//enum SupportedTypes::SupportedTypes operator() (Segment_2d obj) const { return obj.getType(); }
    };
-
-   class Iso_rectangle_2d : public Kernel::Iso_rectangle_2, public JsonCGALBase
-   {
-	   public:
-		   using Kernel::Iso_rectangle_2::Iso_rectangle_2;
-		   nlohmann::json encode();
-   };
-
-   class Circle_2d : public Kernel::Circle_2, public JsonCGALBase
-   {
-	   public:
-		   using Kernel::Circle_2::Circle_2;
-		   nlohmann::json encode();
-   };
-
-
+ 
+   /* main object container class */
    class JsonCGAL
    {
    private:
 	   void parse_json_container(nlohmann::json container);
 	   nlohmann::json create_json_container();
-	   CGAL_list<Point_2d> _points;
-	   CGAL_list<Line_2d> _lines;
-	   CGAL_list<Segment_2d> _segments;
+	   //CGAL_list<CGAL_object> get_objects(enum SupportedTypes::SupportedTypes type);
+	   CGAL_list<CGAL_object> _objs;
 
    public:
 	   bool load(std::string filename);
 	   bool load_from_string(std::string json_string);
 	   bool dump(std::string filename);
 	   std::string dump_to_string();
+	   //CGAL_list<CGAL_object> get_objects(enum SupportedTypes::SupportedTypes type);
 
-	   /* accessors */
-	   CGAL_list<Point_2d> get_points() { return this->_points; }
-	   void set_points(CGAL_list<Point_2d> points) { this->_points = points; }
-	   CGAL_list<Line_2d> get_lines() { return this->_lines; }
-	   void set_lines(CGAL_list<Line_2d> lines) { this->_lines = lines; }
-	   CGAL_list<Segment_2d> get_segments() { return this->_segments; }
-	   void set_segments(CGAL_list<Segment_2d> segments) { this->_segments = segments; }
+	   template <class T>
+	   CGAL_list<T> get_objects( T object )
+	   {
+		   CGAL_list<T> container;
+		   SupportedTypes::SupportedTypes objectType;
+
+		   BOOST_FOREACH(CGAL_object &obj, this->_objs)
+		   {
+			   objectType = boost::apply_visitor(JsonCGALVisitor(), obj);
+			   if (objectType == object.getType())
+			   {
+				   container.push_back(boost::get<T>(obj));
+			   }
+		   }
+		   return container;
+	   };
+      
+       template <class T>
+       void add_objects(CGAL_list<T> objects)
+	   {
+		   for (CGAL_list<T>::iterator it = objects.begin(); it < objects.size(); it++)
+		   {
+			   this->_objs.push_back(*it);
+		   }
+		   return;
+	   };
+	   
    };
-}
+};
+
 
 #endif /* __JSON_CGAL_H */

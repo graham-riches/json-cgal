@@ -46,7 +46,7 @@ namespace JsonCGAL
 			{
 				case SupportedTypes::point_2:
 					coordinates = field["coordinates"].get<std::vector<double>>();
-					this->_points.push_back(Point_2d(coordinates[0], coordinates[1]));
+					this->_objs.push_back(Point_2d(coordinates[0], coordinates[1]));
 					break;
 
 				case SupportedTypes::line_2:
@@ -56,7 +56,7 @@ namespace JsonCGAL
 						coordinates = point["coordinates"].get<std::vector<double>>();
 						points.push_back(Point_2d(coordinates[0], coordinates[1]));
 					}
-					this->_lines.push_back(Line_2d(points[0], points[1]));
+					//this->_objs.push_back(Line_2d(points[0], points[1]));
 					break;
 
 				case SupportedTypes::segment_2:
@@ -66,7 +66,7 @@ namespace JsonCGAL
 						coordinates = point["coordinates"].get<std::vector<double>>();
 						points.push_back(Point_2d(coordinates[0], coordinates[1]));
 					}
-					this->_segments.push_back(Segment_2d(points[0], points[1]));
+					//this->_objs.push_back(Segment_2d(points[0], points[1]));
 					break;
 
 				default:
@@ -91,25 +91,6 @@ namespace JsonCGAL
 		/* create the container as an empty array */
 		nlohmann::json container = nlohmann::json::array();
 		
-      /* TODO: blast this all away with a single templated smart pointer vector of JsonCGALBase objects */
-		/* encode the points */
-		for (CGAL_list<Point_2d>::iterator it = this->_points.begin(); it < this->_points.end(); it++)
-		{
-			point = *it;
-			container.push_back(point.encode());
-		}
-		/* encode the lines */
-		for (CGAL_list<Line_2d>::iterator it = this->_lines.begin(); it < this->_lines.end(); it++)
-		{
-			line = *it;
-			container.push_back(line.encode());
-		}
-		/* encode the segments */
-		for (CGAL_list<Segment_2d>::iterator it = this->_segments.begin(); it < this->_segments.end(); it++)
-		{
-			segment = *it;
-			container.push_back(segment.encode());
-		}
 
 		return container;
 	}
@@ -222,97 +203,4 @@ namespace JsonCGAL
 		std::string output = container.dump(4);
 		return output;
 	}
-
-   /**
-	 * \brief json encoding method for Point class
-	 * 
-	 * \return nlohmann::json 
-	 */
-	nlohmann::json Point_2d::encode()
-	{
-		nlohmann::json json;
-		json = { {"type", "point"}, {"coordinates", {this->x(), this->y()} } };
-		return json;
-	}
-
-   /**
-	 * \brief json encoding method for Line class
-	 * 
-	 * \return nlohmann::json 
-	 */
-	nlohmann::json Line_2d::encode()
-	{
-		nlohmann::json json;
-		Kernel::Point_2 point;
-		point = this->point(0);
-		Point_2d source(point.x(), point.y());
-		point = this->point(1);
-		Point_2d target(point.x(), point.y());
-		json = { {"type", "line"}, {"points", {source.encode(), target.encode()} } };
-		return json;
-	}
-
-   /**
-	 * \brief json encoding method for Segment class
-	 * 
-	 * \return nlohmann::json 
-	 */
-	nlohmann::json Segment_2d::encode()
-	{
-		nlohmann::json json;
-		Kernel::Point_2 point;
-		point = this->source();
-		Point_2d source(point.x(), point.y());
-		point = this->target();
-		Point_2d target(point.x(), point.y());
-		json = { {"type", "segment"}, {"points", {source.encode(), target.encode()} } };
-		return json;
-	}
-
-	/**
-	 * \brief json encoding for Weighted_point class
-	 * 
-	 * \retval nlohmann::json 
-	 */
-	nlohmann::json Weighted_point_2d::encode()
-	{
-      nlohmann::json json;
-      return json;
-	}
-
-	nlohmann::json Vector_2d::encode()
-	{
-      nlohmann::json json;
-      return json;
-	}
-
-	nlohmann::json Direction_2d::encode()
-	{
-      nlohmann::json json;
-      return json;
-	}
-
-	nlohmann::json Ray_2d::encode()
-	{
-      nlohmann::json json;
-      return json;
-	}
-
-	nlohmann::json Triangle_2d::encode()
-	{
-      nlohmann::json json;
-      return json;
-	}
-
-	nlohmann::json Iso_rectangle_2d::encode()
-	{
-      nlohmann::json json;
-      return json;
-	}
-
-	nlohmann::json Circle_2d::encode()
-	{
-      nlohmann::json json;
-      return json;
-	}
-}
+};

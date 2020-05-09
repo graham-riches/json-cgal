@@ -14,8 +14,6 @@
 
 #include <map>
 #include <string>
-#include "JsonCGAL.h"
-
 
 namespace JsonCGAL
 {
@@ -27,13 +25,13 @@ namespace JsonCGAL
 			point_2,
 			line_2,
 			segment_2,
-         weighted_point_2,
-         vector_2,
-         direction_2,
-         ray_2,
-         triangle_2,
-         iso_rectangle_2,
-         circle_2,
+			weighted_point_2,
+			vector_2,
+			direction_2,
+			ray_2,
+			triangle_2,
+			iso_rectangle_2,
+			circle_2,
 		};
 	};
 	
@@ -47,8 +45,7 @@ namespace JsonCGAL
    };
 
 
-}
-
+};
 
 #endif /* __JSON_CGAL_MAP_H */
 

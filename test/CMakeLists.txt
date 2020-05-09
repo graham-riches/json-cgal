@@ -3,6 +3,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "/MT")
 set(CMAKE_CXX_FLAGS_DEBUG "/MTd /Zi /Ob0 /Od /RTC1")
 
 find_package(CGAL)
+set(Boost_USE_STATIC_LIBS ON)
+find_package(Boost REQUIRED)
 
 file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
 
@@ -13,4 +15,5 @@ add_test(NAME ${BINARY} COMMAND ${BINARY})
 
 target_link_libraries(${BINARY} CGAL::CGAL)
 target_link_libraries(${BINARY} gtest)
+target_link_libraries(${BINARY} ${Boost_LIBRARIES})
 target_link_libraries(${BINARY} JsonCGAL_lib)
