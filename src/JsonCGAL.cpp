@@ -35,6 +35,7 @@ namespace JsonCGAL
 		std::string datatype;
 		nlohmann::json field;
 		nlohmann::json point;
+		nlohmann::json points_container;
 
 		/* iterate over the json container */
 		for (nlohmann::json::iterator it = container.begin(); it < container.end(); it++)
@@ -50,23 +51,25 @@ namespace JsonCGAL
 					break;
 
 				case SupportedTypes::line_2:
-					for (nlohmann::json::iterator j = field.begin(); j < field.end(); j++)
+					points_container = field["points"];
+					for (nlohmann::json::iterator j = points_container.begin(); j < points_container.end(); j++)
 					{
 						point = *j;
 						coordinates = point["coordinates"].get<std::vector<double>>();
 						points.push_back(Point_2d(coordinates[0], coordinates[1]));
 					}
-					//this->_objs.push_back(Line_2d(points[0], points[1]));
+					this->_objs.push_back(Line_2d(points[0], points[1]));
 					break;
 
 				case SupportedTypes::segment_2:
-					for (nlohmann::json::iterator j = field.begin(); j < field.end(); j++)
+					points_container = field["points"];
+					for (nlohmann::json::iterator j = points_container.begin(); j < points_container.end(); j++)
 					{
 						point = *j;
 						coordinates = point["coordinates"].get<std::vector<double>>();
 						points.push_back(Point_2d(coordinates[0], coordinates[1]));
 					}
-					//this->_objs.push_back(Segment_2d(points[0], points[1]));
+					this->_objs.push_back(Segment_2d(points[0], points[1]));
 					break;
 
 				default:
@@ -84,14 +87,13 @@ namespace JsonCGAL
 	*/
 	nlohmann::json JsonCGAL::create_json_container()
 	{
-		Point_2d point;
-		Line_2d line;
-		Segment_2d segment;
-
 		/* create the container as an empty array */
 		nlohmann::json container = nlohmann::json::array();
-		
 
+		BOOST_FOREACH(CGAL_object &obj, this->_objs)
+		{
+			container.push_back(boost::apply_visitor(JsonCGALPack(), obj));
+		}
 		return container;
 	}
 

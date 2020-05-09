@@ -21,7 +21,7 @@ namespace JsonCGAL
 	nlohmann::json Point_2d::encode()
 	{
 		nlohmann::json json;
-		json = { {"type", "point"}, {"coordinates", {this->x(), this->y()} } };
+		json = { {"type", "point_2"}, {"coordinates", {this->x(), this->y()} } };
 		return json;
 	}
 
@@ -38,7 +38,7 @@ namespace JsonCGAL
 		Point_2d source(point.x(), point.y());
 		point = this->point(1);
 		Point_2d target(point.x(), point.y());
-		json = { {"type", "line"}, {"points", {source.encode(), target.encode()} } };
+		json = { {"type", "line_2"}, {"points", {source.encode(), target.encode()} } };
 		return json;
 	}
 
@@ -55,7 +55,7 @@ namespace JsonCGAL
 		Point_2d source(point.x(), point.y());
 		point = this->target();
 		Point_2d target(point.x(), point.y());
-		json = { {"type", "segment"}, {"points", {source.encode(), target.encode()} } };
+		json = { {"type", "segment_2"}, {"points", {source.encode(), target.encode()} } };
 		return json;
 	}
 

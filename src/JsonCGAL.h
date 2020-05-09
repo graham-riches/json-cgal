@@ -31,15 +31,24 @@
 namespace JsonCGAL
 {	
    /* multi-object boost variant type for holding CGAL objects */
-   typedef boost::variant<Point_2d> CGAL_object;
+   typedef boost::variant<Point_2d, Segment_2d, Line_2d> CGAL_object;
 
    /* boost visitor class for unpacking objects */
-   class JsonCGALVisitor : public boost::static_visitor<enum SupportedTypes::SupportedTypes>
+   class JsonCGALUnpack : public boost::static_visitor<enum SupportedTypes::SupportedTypes>
    {
 		public:
-			enum SupportedTypes::SupportedTypes operator() (Point_2d obj) const { return obj.getType(); }
-			//enum SupportedTypes::SupportedTypes operator() (Line_2d    obj) const { return obj.getType(); }
-			//enum SupportedTypes::SupportedTypes operator() (Segment_2d obj) const { return obj.getType(); }
+			enum SupportedTypes::SupportedTypes operator() (Point_2d   obj) const { return obj.getType(); }
+			enum SupportedTypes::SupportedTypes operator() (Line_2d    obj) const { return obj.getType(); }
+			enum SupportedTypes::SupportedTypes operator() (Segment_2d obj) const { return obj.getType(); }
+   };
+
+   /* boost visitor class for packing objects */
+   class JsonCGALPack : public boost::static_visitor<nlohmann::json>
+   {
+		public:
+			nlohmann::json operator() (Point_2d   obj) const { return obj.encode(); }
+			nlohmann::json operator() (Line_2d    obj) const { return obj.encode(); }
+			nlohmann::json operator() (Segment_2d obj) const { return obj.encode(); }
    };
  
    /* main object container class */
@@ -48,7 +57,6 @@ namespace JsonCGAL
    private:
 	   void parse_json_container(nlohmann::json container);
 	   nlohmann::json create_json_container();
-	   //CGAL_list<CGAL_object> get_objects(enum SupportedTypes::SupportedTypes type);
 	   CGAL_list<CGAL_object> _objs;
 
    public:
@@ -56,7 +64,6 @@ namespace JsonCGAL
 	   bool load_from_string(std::string json_string);
 	   bool dump(std::string filename);
 	   std::string dump_to_string();
-	   //CGAL_list<CGAL_object> get_objects(enum SupportedTypes::SupportedTypes type);
 
 	   template <class T>
 	   CGAL_list<T> get_objects( T object )
@@ -66,7 +73,7 @@ namespace JsonCGAL
 
 		   BOOST_FOREACH(CGAL_object &obj, this->_objs)
 		   {
-			   objectType = boost::apply_visitor(JsonCGALVisitor(), obj);
+			   objectType = boost::apply_visitor(JsonCGALUnpack(), obj);
 			   if (objectType == object.getType())
 			   {
 				   container.push_back(boost::get<T>(obj));
@@ -78,7 +85,7 @@ namespace JsonCGAL
        template <class T>
        void add_objects(CGAL_list<T> objects)
 	   {
-		   for (CGAL_list<T>::iterator it = objects.begin(); it < objects.size(); it++)
+		   for (CGAL_list<T>::iterator it = objects.begin(); it < objects.end(); it++)
 		   {
 			   this->_objs.push_back(*it);
 		   }
