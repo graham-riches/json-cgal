@@ -14,8 +14,6 @@
 #include "JsonCGALTypes.h"
 #include "json.hpp"
 #include "cgal_kernel_config.h"
-#include <boost/variant.hpp>
-#include <boost/foreach.hpp>
 
 
 TEST(JsonCGALTests, TestLoadInvalidFileReturnsFalse)
@@ -108,13 +106,12 @@ TEST(JsonCGALTests, TestDumpingToString)
 	points.push_back(JsonCGAL::Point_2d(-1, -1));
 	json_data.add_objects(points);
 	test_string = json_data.dump_to_string();
-	/* string length should at least include the word "point" */
 	ASSERT_GE(test_string.length(), 5);
 }
 
 TEST(PointTests, TestEncodingPoint)
 {
-	JsonCGAL::Point_2d p(-1, 0);
+   JsonCGAL::Point_2d p(-1, 0);
 	nlohmann::json json = p.encode();
 	ASSERT_GE(json.size(), 1);
 }

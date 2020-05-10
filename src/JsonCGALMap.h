@@ -44,7 +44,6 @@ namespace JsonCGAL
       {"circle_2", SupportedTypes::circle_2},
    };
 
-
 };
 
 #endif /* __JSON_CGAL_MAP_H */

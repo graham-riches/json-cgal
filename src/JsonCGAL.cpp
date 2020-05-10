@@ -41,41 +41,7 @@ namespace JsonCGAL
 		for (nlohmann::json::iterator it = container.begin(); it < container.end(); it++)
 		{
 			field = *it;
-			datatype = field["type"].get<std::string>();
-			
-			switch (key_map[datatype])
-			{
-				case SupportedTypes::point_2:
-					coordinates = field["coordinates"].get<std::vector<double>>();
-					this->_objs.push_back(Point_2d(coordinates[0], coordinates[1]));
-					break;
-
-				case SupportedTypes::line_2:
-					points_container = field["points"];
-					for (nlohmann::json::iterator j = points_container.begin(); j < points_container.end(); j++)
-					{
-						point = *j;
-						coordinates = point["coordinates"].get<std::vector<double>>();
-						points.push_back(Point_2d(coordinates[0], coordinates[1]));
-					}
-					this->_objs.push_back(Line_2d(points[0], points[1]));
-					break;
-
-				case SupportedTypes::segment_2:
-					points_container = field["points"];
-					for (nlohmann::json::iterator j = points_container.begin(); j < points_container.end(); j++)
-					{
-						point = *j;
-						coordinates = point["coordinates"].get<std::vector<double>>();
-						points.push_back(Point_2d(coordinates[0], coordinates[1]));
-					}
-					this->_objs.push_back(Segment_2d(points[0], points[1]));
-					break;
-
-				default:
-					std::cout << "JSON: unsupported CGAL data type " << std::endl;
-					break;
-			}
+         this->_objs.push_back(JsonCGALBase::object_factory(field));
 		}
 		return;
 	}
@@ -89,11 +55,12 @@ namespace JsonCGAL
 	{
 		/* create the container as an empty array */
 		nlohmann::json container = nlohmann::json::array();
-
-		BOOST_FOREACH(CGAL_object &obj, this->_objs)
-		{
-			container.push_back(boost::apply_visitor(JsonCGALPack(), obj));
-		}
+      JsonCGALBase *obj;
+      for (CGAL_list<JsonCGALBase*>::iterator it = this->_objs.begin(); it < this->_objs.end(); it++)
+      {
+         obj = *it;
+         container.push_back(obj->encode());
+      }
 		return container;
 	}
 
