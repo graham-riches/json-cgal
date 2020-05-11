@@ -9,6 +9,7 @@
 
 import json
 import jsonschema
+import os
 
 
 class Point_2:
@@ -29,7 +30,7 @@ class Segment_2:
 
     def encode(self):
         return {'type': 'segment_2', 'points': [self.p.encode(),
-                                              self.q.encode()]}
+                                                self.q.encode()]}
 
 
 class Line_2:
@@ -40,7 +41,7 @@ class Line_2:
 
     def encode(self):
         return {'type': 'line_2', 'points': [self.p.encode(),
-                                              self.q.encode()]}
+                                             self.q.encode()]}
 
 
 class JsonCGAL:
@@ -56,7 +57,7 @@ class JsonCGAL:
     def load_schema(self):
         """ load the format schema """
         try:
-		    path = os.path.dirname(__file__)
+            path = os.path.dirname(__file__)
             schema_path = os.path.join(path, 'schema.json')
             with open(schema_path, 'r') as schema_file:
                 self._schema = json.loads(schema_file.read())
