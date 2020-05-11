@@ -18,7 +18,7 @@ class Point_2:
         self.y = y
 
     def encode(self):
-        return {'type': 'point', 'coordinates': [self.x, self.y]}
+        return {'type': 'point_2', 'coordinates': [self.x, self.y]}
 
 
 class Segment_2:
@@ -28,7 +28,7 @@ class Segment_2:
         self.q = q
 
     def encode(self):
-        return {'type': 'segment', 'points': [self.p.encode(),
+        return {'type': 'segment_2', 'points': [self.p.encode(),
                                               self.q.encode()]}
 
 
@@ -39,7 +39,7 @@ class Line_2:
         self.q = q
 
     def encode(self):
-        return {'type': 'segment', 'points': [self.p.encode(),
+        return {'type': 'line_2', 'points': [self.p.encode(),
                                               self.q.encode()]}
 
 
@@ -56,7 +56,9 @@ class JsonCGAL:
     def load_schema(self):
         """ load the format schema """
         try:
-            with open('schema.json', 'r') as schema_file:
+		    path = os.path.dirname(__file__)
+            schema_path = os.path.join(path, 'schema.json')
+            with open(schema_path, 'r') as schema_file:
                 self._schema = json.loads(schema_file.read())
         except FileNotFoundError as file_error:
             print(file_error)
@@ -115,11 +117,11 @@ class JsonCGAL:
         from json
         """
         if 'type' in obj:
-            if obj['type'] == 'point':
+            if obj['type'] == 'point_2':
                 return Point_2(*obj['coordinates'])
-            elif obj['type'] == 'segment':
+            elif obj['type'] == 'segment_2':
                 return Segment_2(*obj['points'])
-            elif obj['type'] == 'line':
+            elif obj['type'] == 'line_2':
                 return Line_2(*obj['points'])
 
 
